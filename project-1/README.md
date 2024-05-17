@@ -19,5 +19,7 @@ There are 3 tests methods given in main.c. To build and run these tests invoke `
 This will build and run the main.c executable. It will print 3 sudoku puzzles and their solutions.
 
 ## Solver Implementation
-	I have used the concept of recursion to impelement the solver for sudoku puzzles. There are other approaches such as using constraint solving to find solutions easilty for a given sudoku puzzle. But since we are dealing with a fixed sized 9x9 puzzle, I have used recursion based method as it is very easy to implement and recusion based solutions are generally very succint.
+	I have used a recursion based solution to impelement the sudoku solver. 
+   There are other approaches such as using constraint solving to find solutions easilty for a given sudoku puzzle. 
+   Since we are dealing with a fixed sized 9x9 puzzle, I used recursion based method as it is very easy to implement and recusion based solutions are generally very succint.
 

@@ -15,7 +15,9 @@ void func1()
         char source[100];
         memset(source, 'C', 100-1); 
         source[100-1] = '\0'; 
-        strcpy(data, source);
+        strcpy(data, source); //  Accessing memory outside allocated block, could lead to segfault.
+                              //  It overwrite the return address on the program stack and lead to make the program execution jump back
+                              //  to an unknown location and program could exit with segfaul. 
         if(data != NULL) 
         {
             printf("%s\n", data);
@@ -28,7 +30,8 @@ void func2()
     char * data;
     data = NULL;
     data = (char *)calloc(100, sizeof(char));
-    strcpy(data, "A String");
+    strcpy(data, "A String"); // No NULL check for data, in case calloc fails to allocate memory.
+                              // This may cause segfault at this point.
     if(data != NULL) 
     {
         printf("%s\n", data);
@@ -49,8 +52,11 @@ void func3()
         if (LogonUserA(
                     username,
                     domain,
+                    //    Buffer overflow attack: passing a raw pointer to local variable passwordBuffer is risky.
+                    //    Any malicious procedure call like LogonUserA can inject malicious payload into passwordBuffer and 
+                    //    launch buffer overflow attack.
                     password,
-                    &pHandle) != 0)
+                    &pHandle) != 0) 
         {
             printf("User logged in successfully.\n");
             CloseHandle(pHandle);
@@ -63,7 +69,7 @@ void func3()
 }
 
 static void func4()
-{
+{ // This looks okay.
     char * data;
     data = NULL;
     data = (char *)calloc(20, sizeof(char));
@@ -85,7 +91,7 @@ void func5()
     {
         printf("%d\n", i);
         i = (i + 1) % 256;
-    } while(i >= 0);
+    } while(i >= 0); // Non-terminating loop. value of i will always between 0 to 255
 }
 
 void func6()
@@ -93,7 +99,7 @@ void func6()
     char dataBuffer[100] = "";
     char * data = dataBuffer;
     printf("Please enter a string: ");
-    if (fgets(data, 100, stdin) < 0)
+    if (fgets(data, 100, stdin) < 0) // fgets returns NULL (0) on failure and this comparision will never be true
     {
         printf("fgets failed!\n");
         exit(1);
@@ -110,6 +116,8 @@ void func7()
     char * data;
     data = "Fortify";
     data = NULL;
+
+    // VULNERABLE: passing null pointer to printf could be a seg fault or undefined behaviour
     printf("%s\n", data);
 }
 
